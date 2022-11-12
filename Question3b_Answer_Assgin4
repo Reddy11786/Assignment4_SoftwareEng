@@ -1,0 +1,139 @@
+﻿
+CREATE TABLE public.Instrument (
+                Name VARCHAR NOT NULL,
+                Pitch VARCHAR NOT NULL,
+                CONSTRAINT instrument_pk PRIMARY KEY (Name)
+);
+
+
+CREATE TABLE public.Address (
+                addressId INTEGER NOT NULL,
+                Number INTEGER NOT NULL,
+                Street1 VARCHAR NOT NULL,
+                Street2 VARCHAR NOT NULL,
+                City CHAR NOT NULL,
+                State CHAR NOT NULL,
+                Zip_Code INTEGER NOT NULL,
+                Telephone INTEGER NOT NULL,
+                CONSTRAINT address_pk PRIMARY KEY (addressId)
+);
+
+
+CREATE TABLE public.Musician (
+                SSN INTEGER NOT NULL,
+                Name VARCHAR NOT NULL,
+                addressId INTEGER NOT NULL,
+                CONSTRAINT musician_pk PRIMARY KEY (SSN)
+);
+
+
+CREATE TABLE public.Album (
+                Album_id INTEGER NOT NULL,
+                Title VARCHAR NOT NULL,
+                Release_date DATE NOT NULL,
+                Format VARCHAR NOT NULL,
+                Age INTEGER NOT NULL,
+                SSN_Producer INTEGER NOT NULL,
+                CONSTRAINT album_pk PRIMARY KEY (Album_id)
+);
+
+
+CREATE TABLE public.Song (
+                Title VARCHAR NOT NULL,
+                Length VARCHAR NOT NULL,
+                SSN_Author INTEGER NOT NULL,
+                album_Id INTEGER NOT NULL,
+                CONSTRAINT song_pk PRIMARY KEY (Title)
+);
+
+
+CREATE TABLE public.Uses (
+                Name VARCHAR NOT NULL,
+                Title VARCHAR NOT NULL,
+                CONSTRAINT uses_pk PRIMARY KEY (Name, Title)
+);
+
+
+CREATE TABLE public.Performer (
+                SSN INTEGER NOT NULL,
+                Title VARCHAR NOT NULL,
+                CONSTRAINT performer_pk PRIMARY KEY (SSN, Title)
+);
+
+
+CREATE TABLE public.Plays (
+                SSN INTEGER NOT NULL,
+                Name VARCHAR NOT NULL,
+                CONSTRAINT plays_pk PRIMARY KEY (SSN, Name)
+);
+
+
+ALTER TABLE public.Plays ADD CONSTRAINT instrument_plays_fk
+FOREIGN KEY (Name)
+REFERENCES public.Instrument (Name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Uses ADD CONSTRAINT instrument_uses_fk
+FOREIGN KEY (Name)
+REFERENCES public.Instrument (Name)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Musician ADD CONSTRAINT address_musician_fk
+FOREIGN KEY (addressId)
+REFERENCES public.Address (addressId)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Plays ADD CONSTRAINT musician_plays_fk
+FOREIGN KEY (SSN)
+REFERENCES public.Musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Performer ADD CONSTRAINT musician_performer_fk
+FOREIGN KEY (SSN)
+REFERENCES public.Musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Song ADD CONSTRAINT musician_song_fk
+FOREIGN KEY (SSN_Author)
+REFERENCES public.Musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Album ADD CONSTRAINT musician_album_fk
+FOREIGN KEY (SSN_Producer)
+REFERENCES public.Musician (SSN)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Song ADD CONSTRAINT album_song_fk
+FOREIGN KEY (album_Id)
+REFERENCES public.Album (Album_id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Performer ADD CONSTRAINT song_performer_fk
+FOREIGN KEY (Title)
+REFERENCES public.Song (Title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
+
+ALTER TABLE public.Uses ADD CONSTRAINT song_uses_fk
+FOREIGN KEY (Title)
+REFERENCES public.Song (Title)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION
+NOT DEFERRABLE;
